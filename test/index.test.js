@@ -57,15 +57,15 @@ describe('GraphQLJSON', () => {
 
   describe('serialize', () => {
     it('should support serialization', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
-          query {
-            rootValue
-          }
-        `,
-        FIXTURE,
-      ).then(({ data, errors }) => {
+        source: `
+                query {
+                  rootValue
+                }
+              `,
+        rootValue: FIXTURE,
+      }).then(({ data, errors }) => {
         expect(data.rootValue).toEqual(FIXTURE);
         expect(errors).toBeUndefined();
       }));
@@ -73,19 +73,15 @@ describe('GraphQLJSON', () => {
 
   describe('parseValue', () => {
     it('should support parsing values', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query($arg: JSON!) {
             value(arg: $arg)
           }
         `,
-        null,
-        null,
-        {
-          arg: FIXTURE,
-        },
-      ).then(({ data, errors }) => {
+        variableValues: { arg: FIXTURE },
+      }).then(({ data, errors }) => {
         expect(data.value).toEqual(FIXTURE);
         expect(errors).toBeUndefined();
       }));
@@ -93,9 +89,9 @@ describe('GraphQLJSON', () => {
 
   describe('parseLiteral', () => {
     it('should support parsing literals', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query($intValue: Int = 3) {
             value(
               arg: {
@@ -118,20 +114,20 @@ describe('GraphQLJSON', () => {
             )
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data.value).toEqual(FIXTURE);
         expect(errors).toBeUndefined();
       }));
 
     it('should handle null literal', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           {
             value(arg: null)
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toEqual({
           value: null,
         });
@@ -139,14 +135,14 @@ describe('GraphQLJSON', () => {
       }));
 
     it('should handle list literal', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           {
             value(arg: [])
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toEqual({
           value: [],
         });
@@ -154,14 +150,14 @@ describe('GraphQLJSON', () => {
       }));
 
     it('should reject invalid literal', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           {
             value(arg: INVALID)
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toBeUndefined();
         expect(errors).toMatchInlineSnapshot(`
           Array [
@@ -181,29 +177,29 @@ describe('GraphQLJSONObject', () => {
 
   describe('serialize', () => {
     it('should support serialization', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query {
             rootValue
           }
         `,
-        FIXTURE,
-      ).then(({ data, errors }) => {
+        rootValue: FIXTURE,
+      }).then(({ data, errors }) => {
         expect(data.rootValue).toEqual(FIXTURE);
         expect(errors).toBeUndefined();
       }));
 
     it('should reject string value', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query {
             rootValue
           }
         `,
-        'foo',
-      ).then(({ data, errors }) => {
+        rootValue: 'foo',
+      }).then(({ data, errors }) => {
         expect(data.rootValue).toBeNull();
         expect(errors).toMatchInlineSnapshot(`
           Array [
@@ -213,15 +209,15 @@ describe('GraphQLJSONObject', () => {
       }));
 
     it('should reject array value', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query {
             rootValue
           }
         `,
-        [],
-      ).then(({ data, errors }) => {
+        rootValue: [],
+      }).then(({ data, errors }) => {
         expect(data.rootValue).toBeNull();
         expect(errors).toMatchInlineSnapshot(`
           Array [
@@ -233,37 +229,33 @@ describe('GraphQLJSONObject', () => {
 
   describe('parseValue', () => {
     it('should support parsing values', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query($arg: JSONObject!) {
             value(arg: $arg)
           }
         `,
-        null,
-        null,
-        {
+        variableValues: {
           arg: FIXTURE,
         },
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data.value).toEqual(FIXTURE);
         expect(errors).toBeUndefined();
       }));
 
     it('should reject string value', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query($arg: JSONObject!) {
             value(arg: $arg)
           }
         `,
-        null,
-        null,
-        {
+        variableValues: {
           arg: 'foo',
         },
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toBeUndefined();
         expect(errors).toMatchInlineSnapshot(`
           Array [
@@ -273,19 +265,17 @@ describe('GraphQLJSONObject', () => {
       }));
 
     it('should reject array value', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query($arg: JSONObject!) {
             value(arg: $arg)
           }
         `,
-        null,
-        null,
-        {
+        variableValues: {
           arg: [],
         },
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toBeUndefined();
         expect(errors).toMatchInlineSnapshot(`
           Array [
@@ -297,9 +287,9 @@ describe('GraphQLJSONObject', () => {
 
   describe('parseLiteral', () => {
     it('should support parsing literals', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           query($intValue: Int = 3) {
             value(
               arg: {
@@ -322,20 +312,20 @@ describe('GraphQLJSONObject', () => {
             )
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data.value).toEqual(FIXTURE);
         expect(errors).toBeUndefined();
       }));
 
     it('should reject string literal', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           {
             value(arg: "foo")
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toBeUndefined();
         expect(errors).toMatchInlineSnapshot(`
           Array [
@@ -345,14 +335,14 @@ describe('GraphQLJSONObject', () => {
       }));
 
     it('should reject array literal', () =>
-      graphql(
+      graphql({
         schema,
-        /* GraphQL */ `
+        source: `
           {
             value(arg: [])
           }
         `,
-      ).then(({ data, errors }) => {
+      }).then(({ data, errors }) => {
         expect(data).toBeUndefined();
         expect(errors).toMatchInlineSnapshot(`
           Array [
