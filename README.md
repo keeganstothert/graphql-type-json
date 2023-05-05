@@ -4,6 +4,10 @@ JSON scalar types for [GraphQL.js](https://github.com/graphql/graphql-js).
 
 [![Codecov][codecov-badge]][codecov]
 
+# FORKED AND UPDATED TO GRAPHQL 16
+
+I forked this package for the sole purpose of upgrading to support graphql 16
+
 ## Usage
 
 This package exports a JSON value scalar GraphQL.js type:
